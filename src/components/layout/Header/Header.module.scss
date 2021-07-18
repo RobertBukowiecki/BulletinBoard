@@ -1,4 +1,37 @@
-@import '../../../styles/settings.scss';
+@import "../../../styles/settings.scss";
 
-// .root {
-// }
+@import "../../../styles/settings.scss";
+
+.root {
+  background: #ffffff;
+  height: 70px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0px 0px 5px rgb(170, 170, 170);
+
+  .toolbar {
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: $logoFont;
+    margin: 0;
+    font-size: 40px;
+    color: rgb(59, 59, 59);
+    text-decoration: none;
+  }
+
+  .wrapper {
+    flex: 0 0 33.333%;
+    padding-right: 10px;
+  }
+
+  .wrapper:last-of-type {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
