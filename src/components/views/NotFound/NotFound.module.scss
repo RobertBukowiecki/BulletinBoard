@@ -1,4 +1,8 @@
-@import '../../../styles/settings.scss';
+@import "../../../styles/settings.scss";
 
-// .root {
-// }
+.root {
+  display: flex column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}

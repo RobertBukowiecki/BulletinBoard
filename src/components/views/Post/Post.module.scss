@@ -1,4 +1,91 @@
-@import '../../../styles/settings.scss';
+@import "../../../styles/settings.scss";
 
-// .root {
-// }
+.root {
+  background: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+
+  .editButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+
+  .deleteButton {
+    position: absolute;
+    top: 5px;
+    right: 100px;
+  }
+
+  .imageWrapper {
+    height: 500px;
+    width: 500px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+    flex: 0 0 50%;
+    padding-top: 50px;
+
+    div:first-of-type {
+      display: flex;
+
+      .infoWrapper {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        h1 {
+          margin: 0;
+        }
+      }
+
+      .favoritesWrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 15%;
+        flex-grow: 2;
+
+        h4 {
+          margin: 0;
+          padding-right: 15px;
+        }
+      }
+    }
+
+    .descriptionWrapper {
+      display: block;
+      text-align: center;
+
+      p {
+        text-align: left;
+      }
+      .dropdown {
+        border-radius: 0%;
+      }
+
+      .contact {
+        display: flex;
+        margin-top: 10px;
+        justify-content: center;
+
+        h4 {
+          margin: 0;
+          margin-bottom: 5px;
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+}

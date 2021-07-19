@@ -8,14 +8,14 @@ import Avatar from "@material-ui/core/Avatar";
 import styles from "./PostCard.module.scss";
 
 const Component = ({ title, price, author, date, image, id }) => (
-  <Link>
+  <Link to={`/post/${id}`} style={{ textDecoration: "none", color: "black" }}>
     <div className={styles.root}>
       <div className={styles.imageWrapper}>
         <img src={image} alt=""></img>
       </div>
       <div className={styles.infoWrapper}>
         <h3 className={styles.title}>{title}</h3>
-        <h2 className={styles.price}>{price}</h2>
+        <h2 className={styles.price}>{price} $</h2>
       </div>
       <div className={styles.rightInfoWrapper}>
         <div className={styles.authorWrapper}>

@@ -1,34 +1,96 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
-import clsx from 'clsx';
+import IconButton from "@material-ui/core/IconButton";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Button from "@material-ui/core/Button";
+import Collapse from "@material-ui/core/Collapse";
 
-// import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
+import { Link } from "react-router-dom";
 
-import styles from './Post.module.scss';
+import { useSelector } from "react-redux";
+import { getUserInfo } from "../../../redux/usersRedux";
+import { getPostById } from "../../../redux/postsRedux";
 
-const Component = ({className, children}) => (
-  <div className={clsx(className, styles.root)}>
-    <h2>Post</h2>
-    {children}
-  </div>
-);
+import styles from "./Post.module.scss";
+
+const Component = (props) => {
+  const userInfo = useSelector((state) => getUserInfo(state));
+  const post = useSelector((state) =>
+    getPostById(state, props.match.params.id)
+  );
+
+  const [dropdownOn, setDropdownOn] = useState(false);
+  const handleSetDropdownOn = () => {
+    setDropdownOn(!dropdownOn);
+  };
+
+  console.log(post);
+
+  const { title, author, price, description, email, tel, id, image, date } =
+    post;
+
+  return (
+    <div className={styles.root}>
+      <div className={styles.imageWrapper}>
+        {image !== undefined && (
+          <img
+            src={image}
+            alt="https://www.geomar.net.pl/sites/default/files/default_images/default_product.png"
+          ></img>
+        )}
+      </div>
+      <div className={styles.wrapper}>
+        <div>
+          <div className={styles.infoWrapper}>
+            <h1>{title}</h1>
+            <h3>Seller {author}</h3>
+            <h2>{price} $</h2>
+          </div>
+          <div className={styles.favoritesWrapper}>
+            <h4>Creation date {date}</h4>
+          </div>
+        </div>
+        <div className={styles.descriptionWrapper}>
+          <p>{description}</p>
+          <IconButton onClick={handleSetDropdownOn} className={styles.dropdown}>
+            CONTACT
+            <ExpandMoreIcon />
+          </IconButton>
+          <Collapse
+            in={dropdownOn}
+            timeout="auto"
+            unmountOnExit
+            className={styles.contact}
+          >
+            <h4>Tel: {tel}</h4>
+            <h4>Email: {email}</h4>
+          </Collapse>
+        </div>
+      </div>
+      {(userInfo.isLogged && userInfo.login === author) || userInfo.admin ? (
+        <Link
+          component={Button}
+          to={`/post/${id}/edit`}
+          color="secondary"
+          className={styles.editButton}
+        >
+          Edit post
+        </Link>
+      ) : null}
+      {(userInfo.isLogged && userInfo.login === author) || userInfo.admin ? (
+        <Button color="secondary" className={styles.deleteButton}>
+          Delete post
+        </Button>
+      ) : null}
+    </div>
+  );
+};
 
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
 };
-
-// const mapStateToProps = state => ({
-//   someProp: reduxSelector(state),
-// });
-
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   Component as Post,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -11,8 +11,8 @@ import Select from "@material-ui/core/Select";
 
 import styles from "./Header.module.scss";
 
-import { connect } from "react-redux";
-import { changeUser } from "../../../redux/usersRedux";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserInfo, logIn, logOut } from "../../../redux/usersRedux";
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -55,13 +55,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Component = ({ changeUser }) => {
-  const [user, setUser] = useState("loggedOut");
+const Component = ({}) => {
   const classes = useStyles();
 
-  const handleChangeUser = (e) => {
-    setUser(e.target.value);
-    changeUser(e.target.value);
+  const userInfo = useSelector((state) => getUserInfo(state));
+  const dispatch = useDispatch();
+
+  const login = (admin) => dispatch(logIn(admin));
+  const logout = () => dispatch(logOut());
+
+  const handleSelectChange = (e) => {
+    e.preventDefault();
+    switch (e.currentTarget.value) {
+      case "loggedOut":
+        return logout();
+      case "loggedIn":
+        return login(false);
+      case "admin":
+        return login(true);
+    }
   };
 
   return (
@@ -84,11 +96,19 @@ const Component = ({ changeUser }) => {
               inputProps={{ "aria-label": "search" }}
             />
           </div>
-          <Select native value={user} onChange={(e) => handleChangeUser(e)}>
+          <Select native onChange={handleSelectChange}>
             <option value={"loggedOut"}>Logged out</option>
-            <option value={"loggedIn"}>Logged in</option>
+            <option value={"loggedIn"}>Logged in as John</option>
             <option value={"admin"}>Admin</option>
           </Select>
+          {userInfo.isLogged ? (
+            <Select native>
+              <option value="userPosts">My Post</option>
+              <option value="logout">Logout</option>
+            </Select>
+          ) : (
+            <Link> LOGIN WITH OAuth </Link>
+          )}
         </Toolbar>
       </Container>
     </div>
@@ -99,17 +119,8 @@ Component.propTypes = {
   changeUser: PropTypes.func,
 };
 
-// const mapStateToProps = state => ({
-//   someProp: reduxSelector(state),
-// });
-
-const mapDispatchToProps = (dispatch) => ({
-  changeUser: (arg) => dispatch(changeUser(arg)),
-});
-const ContainerFunc = connect(null, mapDispatchToProps)(Component);
-
 export {
-  ContainerFunc as Header,
+  Component as Header,
   // Container as Header,
   Component as HeaderComponent,
 };
