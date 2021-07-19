@@ -1,74 +1,94 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import clsx from "clsx";
+import InputBase from "@material-ui/core/InputBase";
+import SearchIcon from "@material-ui/icons/Search";
+import { fade, makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Toolbar from "@material-ui/core/Toolbar";
+import Select from "@material-ui/core/Select";
 
 import styles from "./Header.module.scss";
-import { Container, Toolbar } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 
-// import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
+import { connect } from "react-redux";
+import { changeUser } from "../../../redux/usersRedux";
 
-const Component = ({ className }) => {
-  const [logged, setLogged] = useState(false);
+const useStyles = makeStyles((theme) => ({
+  search: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.35),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.common.white, 0.4),
+    },
+    marginLeft: 0,
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(1),
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputRoot: {
+    color: "inherit",
+    width: "100%",
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
+}));
 
-  const handleClick = () => {
-    setLogged(!logged);
+const Component = ({ changeUser }) => {
+  const [user, setUser] = useState("loggedOut");
+  const classes = useStyles();
+
+  const handleChangeUser = (e) => {
+    setUser(e.target.value);
+    changeUser(e.target.value);
   };
 
   return (
-    <div className={clsx(className, styles.root)}>
+    <div className={styles.root}>
       <Container maxWidth="xl">
         <Toolbar className={styles.toolbar}>
-          <div className={styles.wrapper}>
-            <Link to="/" className={styles.logo}>
-              MotoOto
-            </Link>
+          <Link to="/" className={styles.logo}>
+            Garage Sales
+          </Link>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
+            />
           </div>
-          <div> SEARCHBAR PLACEHOLDER </div>
-          <div className={styles.wrapper}>
-            {logged ? (
-              <div>
-                <Button
-                  variant="contained"
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                >
-                  Menu
-                </Button>
-                <Menu id="simple-menu" keepMounted autoFocus={false}>
-                  {
-                    <MenuItem>
-                      <Link to="/post/add">New post</Link>
-                    </MenuItem>
-                  }
-                  {
-                    <MenuItem>
-                      <Link to={"/posts/my-posts"}>My posts</Link>
-                    </MenuItem>
-                  }
-                  {
-                    <MenuItem>
-                      <a onClick={handleClick}>Logout</a>
-                    </MenuItem>
-                  }
-                </Menu>
-              </div>
-            ) : (
-              <Link
-                variant="contained"
-                component={Button}
-                to={"/auth/google"}
-                onClick={handleClick}
-              >
-                Login
-              </Link>
-            )}
-          </div>
+          <Select native value={user} onChange={(e) => handleChangeUser(e)}>
+            <option value={"loggedOut"}>Logged out</option>
+            <option value={"loggedIn"}>Logged in</option>
+            <option value={"admin"}>Admin</option>
+          </Select>
         </Toolbar>
       </Container>
     </div>
@@ -76,22 +96,20 @@ const Component = ({ className }) => {
 };
 
 Component.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
+  changeUser: PropTypes.func,
 };
 
 // const mapStateToProps = state => ({
 //   someProp: reduxSelector(state),
 // });
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
+const mapDispatchToProps = (dispatch) => ({
+  changeUser: (arg) => dispatch(changeUser(arg)),
+});
+const ContainerFunc = connect(null, mapDispatchToProps)(Component);
 
 export {
-  Component as Header,
+  ContainerFunc as Header,
   // Container as Header,
   Component as HeaderComponent,
 };

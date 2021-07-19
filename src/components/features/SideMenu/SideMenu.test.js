@@ -1,10 +1,10 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { HomepageComponent } from "./Homepage";
+import { SiteMenuComponent } from "./SideMenu";
 
-describe("Component Homepage", () => {
+describe("Component SiteMenu", () => {
   it("should render without crashing", () => {
-    const component = shallow(<HomepageComponent />);
+    const component = shallow(<SiteMenuComponent />);
     expect(component).toBeTruthy();
   });
 });
