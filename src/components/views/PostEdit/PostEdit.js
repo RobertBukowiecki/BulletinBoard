@@ -17,38 +17,46 @@ const Component = (props) => {
     getPostById(state, props.match.params.id)
   );
   const userInfo = useSelector((state) => getUserInfo(state));
+  const { isLogged, login, admin } = userInfo;
 
   const { image, title, author, price, date, description } = post;
 
   return (
-    <div className={styles.root}>
-      <div className={styles.imageWrapper}>
-        <img src={image} alt=""></img>
-      </div>
-      <div className={styles.wrapper}>
-        <div>
-          <div className={styles.infoWrapper}>
-            <h1>{title}</h1>
-            <h3>
-              Seller <TextField value={author} />
-            </h3>
-            <h2>{price} $</h2>
+    <>
+      {(isLogged && login === author) || admin ? (
+        <div className={styles.root}>
+          <div className={styles.imageWrapper}>
+            <img src={image} alt=""></img>
           </div>
-          <div className={styles.favoritesWrapper}>
-            <h4>Creation date {date}</h4>
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon />
-            </IconButton>
+          <div className={styles.wrapper}>
+            <div>
+              <div className={styles.infoWrapper}>
+                <h3>
+                  Title: <TextField value={title} />
+                </h3>
+                <h3>
+                  Seller: <TextField value={author} />
+                </h3>
+                <h2>
+                  Price: <TextField value={price} $ />
+                </h2>
+              </div>
+              <div className={styles.favoritesWrapper}>
+                <h4>Creation date {date}</h4>
+              </div>
+            </div>
+            <div className={styles.descriptionWrapper}>
+              <p>{description}</p>
+            </div>
           </div>
+          <Button color="secondary" className={styles.saveButton}>
+            Save post
+          </Button>
         </div>
-        <div className={styles.descriptionWrapper}>
-          <p>{description}</p>
-        </div>
-      </div>
-      <Button color="secondary" className={styles.saveButton}>
-        Save post
-      </Button>
-    </div>
+      ) : (
+        <h2>Please login to edit post</h2>
+      )}
+    </>
   );
 };
 
