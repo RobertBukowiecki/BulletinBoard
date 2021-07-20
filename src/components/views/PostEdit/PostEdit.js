@@ -17,6 +17,7 @@ const Component = (props) => {
     getPostById(state, props.match.params.id)
   );
   const userInfo = useSelector((state) => getUserInfo(state));
+
   const { image, title, author, price, date, description } = post;
 
   return (
