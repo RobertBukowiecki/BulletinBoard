@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { PostCard } from "../../features/PostCard/PostCard";
 import Grid from "@material-ui/core/Grid";
@@ -6,13 +6,25 @@ import { SideMenu } from "../../features/SideMenu/SideMenu";
 
 import clsx from "clsx";
 
-import { useSelector } from "react-redux";
-import { getAll } from "../../../redux/postsRedux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchPublished,
+  getAll,
+  getAllPublished,
+} from "../../../redux/postsRedux";
 
 import styles from "./Homepage.module.scss";
 
 const Component = ({ className }) => {
   const postData = useSelector((state) => getAll(state));
+  const postPublished = useSelector((state) => getAllPublished(state));
+  const dispatch = useDispatch();
+  const fetchPublishedPosts = (payload) => dispatch(fetchPublished(payload));
+
+  useEffect(() => {
+    fetchPublishedPosts();
+  });
+
   return (
     <div className={clsx(className, styles.root)}>
       <div className={styles.wrapper}>
@@ -34,12 +46,6 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
 };
-
-// const mapStateToProps = (state) => ({
-//   postData: getAll(state),
-// });
-
-// const Container = connect(mapStateToProps)(Component);
 
 export {
   Component as Homepage,
