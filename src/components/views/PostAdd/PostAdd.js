@@ -15,31 +15,39 @@ import { Form as FormField, Field } from "react-final-form";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../../../redux/usersRedux";
 import styles from "./PostAdd.module.scss";
-import { addPost } from "../../../redux/postsRedux";
+import { fetchAddPost } from "../../../redux/postsRedux";
 
 const Component = () => {
   const userInfo = useSelector((state) => getUserInfo(state));
 
   const dispatch = useDispatch();
-  const addingPost = (payload) => dispatch(addPost(payload));
+  const addPost = (payload) => dispatch(fetchAddPost(payload));
 
-  const testCategories = ["asdads", "11111", "bbbbb"];
+  const date = () => {
+    const date = new Date();
+    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+  };
+
+  const testCategories = ["BMW", "AUDI", "MERCEDES"];
 
   const onSubmit = (values) => {
-    const { title, author, description, email, price, phone } = values;
+    const { title, author, text, email, price, phone } = values;
 
     const output = {
       id: uuidv4(),
+      created: date(),
+      updated: date(),
+      status: "published",
       title,
       author,
-      description,
+      text,
       email,
       price,
       phone,
       image:
         "https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
     };
-    addingPost(output);
+    addPost(output);
   };
 
   const required = (value) => (value ? undefined : "Required");
@@ -158,7 +166,7 @@ const Component = () => {
                     );
                   }}
                 </Field>
-                <Field name="description" validate={required}>
+                <Field name="text" validate={required}>
                   {(props) => {
                     const { name, value, onChange } = props.input;
                     return (

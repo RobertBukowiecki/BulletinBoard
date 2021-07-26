@@ -1,9 +1,11 @@
 import Axios from "axios";
 
+import { API_URL } from "../config";
+
 /* selectors */
 export const getAll = ({ posts }) => posts.data;
 export const getPostById = ({ posts }, id) =>
-  posts.data.products.find((item) => item.id == id);
+  posts.data.find((item) => item.id == id);
 export const getAllPublished = ({ posts }) =>
   posts.data.filter((item) => item.status == "published");
 
@@ -17,6 +19,8 @@ const FETCH_SUCCESS = createActionName("FETCH_SUCCESS");
 const FETCH_ERROR = createActionName("FETCH_ERROR");
 const ADD_POST = createActionName("ADD_POST");
 const EDIT_POST = createActionName("EDIT_POST");
+const FETCH_ALL_POSTS = createActionName("FETCH_ALL_POSTS");
+const FETCH_ADD_POST = createActionName("FETCH_ADD_POST");
 
 /* action creators */
 export const fetchStarted = (payload) => ({ payload, type: FETCH_START });
@@ -26,13 +30,28 @@ export const addPost = (payload) => ({ payload, type: ADD_POST });
 export const editPost = (payload) => ({ payload, type: EDIT_POST });
 
 /* thunk creators */
-export const fetchPublished = () => {
+export const fetchAll = () => {
   return (dispatch, getState) => {
     dispatch(fetchStarted());
+    const posts = getState();
+    if (posts.posts.data.length < 1)
+      Axios.get(`${API_URL}/posts`)
+        .then((res) => {
+          dispatch(fetchSuccess(res.data));
+          console.log(res.data);
+        })
+        .catch((err) => {
+          dispatch(fetchError(err.message || true));
+        });
+  };
+};
 
-    Axios.get("http://localhost:8000/api/posts")
+export const fetchAddPost = (data) => {
+  return (dispatch, getState) => {
+    dispatch(fetchStarted());
+    Axios.post(`${API_URL}/posts`, data)
       .then((res) => {
-        dispatch(fetchSuccess(res.data));
+        dispatch(addPost(res.data));
       })
       .catch((err) => {
         dispatch(fetchError(err.message || true));
@@ -62,9 +81,7 @@ export const reducer = (statePart = [], action = {}) => {
     case ADD_POST: {
       return {
         ...statePart,
-        data: {
-          products: [...statePart.data.products, action.payload],
-        },
+        data: [...statePart.data, action.payload],
       };
     }
     case FETCH_START: {

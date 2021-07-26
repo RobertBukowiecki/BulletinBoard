@@ -7,24 +7,20 @@ import { SideMenu } from "../../features/SideMenu/SideMenu";
 import clsx from "clsx";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchPublished,
-  getAll,
-  getAllPublished,
-} from "../../../redux/postsRedux";
+import { fetchAll, getAllPublished, getAll } from "../../../redux/postsRedux";
 
 import styles from "./Homepage.module.scss";
 
 const Component = ({ className }) => {
-  const postData = useSelector((state) => getAll(state));
-  const postPublished = useSelector((state) => getAllPublished(state));
   const dispatch = useDispatch();
-  const fetchPublishedPosts = (payload) => dispatch(fetchPublished(payload));
 
   useEffect(() => {
-    fetchPublishedPosts();
-  });
+    dispatch(fetchAll());
+  }, [dispatch]);
 
+  const postData = useSelector(getAllPublished);
+
+  console.log(postData);
   return (
     <div className={clsx(className, styles.root)}>
       <div className={styles.wrapper}>
@@ -33,7 +29,7 @@ const Component = ({ className }) => {
         </Grid>
         <Grid container spacing={3} item xs={9}>
           <div className={styles.products}>
-            {postData.products.map((data) => (
+            {postData.map((data) => (
               <PostCard key={data.id} {...data} />
             ))}
           </div>

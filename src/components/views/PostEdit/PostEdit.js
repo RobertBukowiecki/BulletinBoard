@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import IconButton from "@material-ui/core/IconButton";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
