@@ -7,8 +7,8 @@ import Avatar from "@material-ui/core/Avatar";
 
 import styles from "./PostCard.module.scss";
 
-const Component = ({ title, price, author, date, image, id }) => (
-  <Link to={`/post/${id}`} style={{ textDecoration: "none", color: "black" }}>
+const Component = ({ title, price, author, date, image, _id }) => (
+  <Link to={`/post/${_id}`} style={{ textDecoration: "none", color: "black" }}>
     <div className={styles.root}>
       <div className={styles.imageWrapper}>
         <img src={image} alt=""></img>
@@ -36,7 +36,7 @@ Component.propTypes = {
   author: PropTypes.string,
   date: PropTypes.string,
   image: PropTypes.string,
-  id: PropTypes.number,
+  _id: PropTypes.number,
 };
 
 // const mapStateToProps = state => ({

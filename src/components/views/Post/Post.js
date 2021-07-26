@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import IconButton from "@material-ui/core/IconButton";
@@ -8,13 +8,18 @@ import Collapse from "@material-ui/core/Collapse";
 
 import { Link } from "react-router-dom";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../../../redux/usersRedux";
-import { getPostById } from "../../../redux/postsRedux";
+import { fetchAll, fetchPost, getPostById } from "../../../redux/postsRedux";
 
 import styles from "./Post.module.scss";
 
 const Component = (props) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAll());
+  }, []);
+
   const userInfo = useSelector((state) => getUserInfo(state));
   const post = useSelector((state) =>
     getPostById(state, props.match.params.id)
@@ -27,7 +32,7 @@ const Component = (props) => {
 
   console.log(post);
 
-  const { title, author, price, description, email, tel, id, image, date } =
+  const { title, author, price, description, email, tel, _id, image, date } =
     post;
 
   return (
@@ -71,7 +76,7 @@ const Component = (props) => {
       {(userInfo.isLogged && userInfo.login === author) || userInfo.admin ? (
         <Link
           component={Button}
-          to={`/post/${id}/edit`}
+          to={`/post/${_id}/edit`}
           color="secondary"
           className={styles.editButton}
         >

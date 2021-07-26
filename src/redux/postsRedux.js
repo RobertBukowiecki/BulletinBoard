@@ -5,7 +5,7 @@ import { API_URL } from "../config";
 /* selectors */
 export const getAll = ({ posts }) => posts.data;
 export const getPostById = ({ posts }, id) =>
-  posts.data.find((item) => item.id == id);
+  posts.data.find((item) => item._id == id);
 export const getAllPublished = ({ posts }) =>
   posts.data.filter((item) => item.status == "published");
 
@@ -19,8 +19,7 @@ const FETCH_SUCCESS = createActionName("FETCH_SUCCESS");
 const FETCH_ERROR = createActionName("FETCH_ERROR");
 const ADD_POST = createActionName("ADD_POST");
 const EDIT_POST = createActionName("EDIT_POST");
-const FETCH_ALL_POSTS = createActionName("FETCH_ALL_POSTS");
-const FETCH_ADD_POST = createActionName("FETCH_ADD_POST");
+const FETCH_ONE_POST = createActionName("FETCH_ONE_POST");
 
 /* action creators */
 export const fetchStarted = (payload) => ({ payload, type: FETCH_START });
@@ -28,6 +27,7 @@ export const fetchSuccess = (payload) => ({ payload, type: FETCH_SUCCESS });
 export const fetchError = (payload) => ({ payload, type: FETCH_ERROR });
 export const addPost = (payload) => ({ payload, type: ADD_POST });
 export const editPost = (payload) => ({ payload, type: EDIT_POST });
+export const fetchOnePost = (payload) => ({ payload, type: FETCH_ONE_POST });
 
 /* thunk creators */
 export const fetchAll = () => {
@@ -59,15 +59,39 @@ export const fetchAddPost = (data) => {
   };
 };
 
+export const fetchPost = (id) => {
+  return (dispatch, getState) => {
+    dispatch(fetchStarted());
+    Axios.get(`${API_URL}/posts/${id}`)
+      .then((res) => {
+        dispatch(fetchOnePost(res.data));
+        console.log("fetchOne post", res.data);
+      })
+      .catch((err) => {
+        dispatch(fetchError(err.message || true));
+      });
+  };
+};
+
 /* reducer */
 export const reducer = (statePart = [], action = {}) => {
   switch (action.type) {
+    case FETCH_ONE_POST: {
+      return {
+        ...statePart,
+        loading: {
+          active: false,
+          error: false,
+        },
+        data: action.payload,
+      };
+    }
     case EDIT_POST: {
       return {
         ...statePart,
         data: {
           products: [
-            ...statePart.data.products.map((data) => {
+            ...statePart.data.map((data) => {
               if (data.id === action.payload.id) {
                 return action.payload;
               } else {
